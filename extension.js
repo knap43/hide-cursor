@@ -5,6 +5,7 @@ export default class HideCursorExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         this._tracker = global.backend.get_cursor_tracker();
+        this._seat = global.stage.context.get_backend().get_default_seat();
         this._hidden = false;
         this._timeoutId = 0;
         this._lastMove = GLib.get_monotonic_time();
@@ -26,6 +27,7 @@ export default class HideCursorExtension extends Extension {
         this._settings.disconnect(this._settingsId);
         this._show();
         this._tracker = null;
+        this._seat = null;
         this._settings = null;
     }
 
@@ -57,6 +59,9 @@ export default class HideCursorExtension extends Extension {
     _hide() {
         if (this._hidden)
             return;
+        // Hiding the pointer normally drops its focus, swallowing clicks and
+        // scrolls; keep the focus so input still reaches what lies beneath.
+        this._seat.inhibit_unfocus();
         this._tracker.inhibit_cursor_visibility();
         this._hidden = true;
     }
@@ -65,6 +70,7 @@ export default class HideCursorExtension extends Extension {
         if (!this._hidden)
             return;
         this._tracker.uninhibit_cursor_visibility();
+        this._seat.uninhibit_unfocus();
         this._hidden = false;
     }
 }
