@@ -1,0 +1,8 @@
+{
+  "uuid": "hide-cursor@knap.local",
+  "name": "Hide Cursor",
+  "description": "Hides the mouse cursor after a period of pointer inactivity and reveals it again on movement.",
+  "shell-version": ["49", "50", "51"],
+  "settings-schema": "org.gnome.shell.extensions.hide-cursor",
+  "url": ""
+}
